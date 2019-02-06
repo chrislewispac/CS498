@@ -2,6 +2,7 @@ import random
 import os
 import string
 import sys
+import re
 
 stopWordsList = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours",
             "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its",
@@ -30,27 +31,19 @@ def process(userID):
     ret = []
 
     # TODO
-    
-    # 1) Divide each sentence into a list of words using delimiters provided in the “delimiters” 
-    # variable; Make all the tokens lowercase (including special characters) and remove any 
-    # tailing and leading spaces.
 
-    # 2) One possible approach to deal with special (non-English) characters is to use decode() 
-    # and encode(). For more information see:
+    with open('input2.txt') as fp:
+        for line in fp:
+                l = line.strip('\n').strip()
+                for d in delimiters:
+                        l = l.replace(d, " ")
+                        finalResult = re.sub(' +', ' ', l)
+                result = finalResult.lower().split(" ")
+                # print [x for x in result if x not in stopWordsList]
+                ret = ret + [x for x in result if x not in stopWordsList]
 
-    # 3) Ignore all common words provided in the “stopWordsList” variable.
-
-    # 4) Keep track of word frequencies. To make the application more interesting, you have to 
-    # process only the titles with certain indexes. These indexes are accessible using the 
-    # “getIndexes” method, which returns an Integer List with 0-based indexes to the input file. 
-    # It is possible to have an index appear several times. In this case, just process the 
-    # index multiple times.
-
-    # 5) Sort the words by frequency in a descending order. If two words have the same number count, 
-    # use the lexigraphy. i.e. the following is sorted: {(Orange, 3), (Apple, 2), (Banana, 2)}
-
-    # 6) Print out the top 20 items from the sorted list. (already implemented below)
-                    
+    # TODO
+                  
     for word in ret:
         print word
 
