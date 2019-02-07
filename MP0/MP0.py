@@ -16,6 +16,7 @@ stopWordsList = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "y
             "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
 delimiters = " \t,;.?!-:@[](){}_*/"
+delimiterRegex = re.compile("[\\t,;.:?!\\-@\\[\\](){}_*/ ]")
 
 def getIndexes(seed):
     random.seed(seed)
@@ -29,20 +30,35 @@ def getIndexes(seed):
 def process(userID):
     indexes = getIndexes(userID)
     ret = []
+    processedLinesArray = []
+    d = dict()
 
-    # TODO
+    # read lines and filter by delimiters & stopWordsList
+    for line in sys.stdin:
+        cleaned = list(filter(None, delimiterRegex.split(line.lower().strip('\n').strip())))
+        filtered = [x for x in cleaned if x not in stopWordsList]
+        processedLinesArray.append(filtered)
 
-    with open('input2.txt') as fp:
-        for line in fp:
-                l = line.strip('\n').strip()
-                for d in delimiters:
-                        l = l.replace(d, " ")
-                        finalResult = re.sub(' +', ' ', l)
-                result = finalResult.lower().split(" ")
-                # print [x for x in result if x not in stopWordsList]
-                ret = ret + [x for x in result if x not in stopWordsList]
+    # iterate over the indices and select the corresponding line from the input txt
+    for i in indexes:
+    # take each word from the list & check if that word already exists in the dictionary 
+        for word in processedLinesArray[i]:
+            # if it already exists increment the count by 1
+            if word in d:
+                d[word] += 1
+            # else insert into dictionary with count of 1
+            else:
+                d[word] = 1
 
-    # TODO
+    # add first 20 of sorted list to ret
+    index = 0
+    for x in sorted(d.items(), key=lambda x: (-x[1], x[0])):
+        if index <=19:
+            ret.append(x[0])
+            index += 1
+        else:
+            break
+
                   
     for word in ret:
         print word
